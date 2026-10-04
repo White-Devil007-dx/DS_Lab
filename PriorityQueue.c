@@ -1,102 +1,96 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
 struct Node {
-    int data,priority;
-    struct Node*link;
+    int data, priority;
+    struct Node* link;
 };
 
-struct Node *temp, *p, *ptr, *front = NULL, *rear = NULL;
+struct Node *front = NULL, *rear = NULL, *temp;
 
-void enqueue() 
-{
-	int x,pri;
+// Enqueue in arrival order (no priority logic here)
+void enqueue() {
+    int x, pri;
     printf("Enter data: ");
     scanf("%d", &x);
-
     printf("Enter Priority of data: ");
     scanf("%d", &pri);
-     ptr = (struct Node*)malloc(sizeof(struct Node));
-     ptr->data=x;
-     ptr->priority=pri;
-    ptr->link=NULL;
 
-    if (front==NULL) {
-        front=ptr;
-        rear=ptr;
-    }
-    else if (ptr->priority < front->priority) {
-        ptr->link=front;
-        front=ptr;
-    }
-    else if (ptr->priority == front->priority)
-    {
-    	printf("element with same priority already exist ...");
-	}
-    else if (ptr->priority > rear->priority) {
-        rear->link=ptr;
-        rear=ptr;
-    }
-    else {
-        temp=front;
+    struct Node* ptr = (struct Node*)malloc(sizeof(struct Node));
+    ptr->data = x;
+    ptr->priority = pri;
+    ptr->link = NULL;
 
-        while (ptr->priority > temp->priority) {
-            p=temp;
-            temp=temp->link;
-        }
-        p->link=ptr;
-        ptr->link=temp;
+    if (front == NULL) {
+        front = rear = ptr;
+    } else {
+        rear->link = ptr;
+        rear = ptr;
     }
-
 }
 
-void dequeue() {
-    if(front==NULL) {
-        printf("Queue underflow\n");
-    }
-    else {
-        temp=front;
-        front=front->link;
+// Bubble sort the linked list by priority (lower = higher)
+void bubbleSort() {
+   if(front == NULL) return;
+   int swapped;
+   struct Node* ptr;
+   ptr = front;
 
-        free(temp);
+   do{
+    swapped =0;
+    while(ptr->link != NULL){
+        if(ptr->priority > ptr->link->priority){
+            int tempdata = ptr->data;
+            int temppri = ptr->priority;
+
+            ptr->data = ptr->link->data;
+            ptr->priority = ptr->link->priority;
+
+            ptr->link->data = tempdata;
+            ptr->link->priority = temppri;
+
+            swapped = 1;
+        }
+        ptr = ptr->link;
     }
+   }while(swapped);
+
 }
 
 void display() {
-    if(front==NULL) {
+    if (front == NULL) {
         printf("Queue is empty\n");
+        return;
     }
-    else {
-        temp=front;
-
-        while(temp!=NULL) {
-            printf("%d ",temp->data);
-            temp=temp->link;
-        }
-
-        printf("\n");
+    temp = front;
+    while (temp != NULL) {
+        printf(" %d ", temp->data);
+        temp = temp->link;
     }
 }
 
-void peek() {
-    if (front==NULL) 
-        printf("Queue is empty\n");
-    else
-        printf("Top element = %d\n", front->data);
+void dequeue() {
+    if (front == NULL) {
+        printf("Queue underflow\n");
+        return;
+    }
+    temp = front;
+    printf("Dequeued element: Data = %d, Priority = %d\n", temp->data, temp->priority);
+    front = front->link;
+    free(temp);
 }
 
 int main(void) {
     int ch;
-    while(1) {
-        printf("\n1. Enqueue\n2. Dequeue\n3. Display\n4. Peek\n5. Exit\n");
+    while (1) {
+        printf("\n1. Enqueue (arrival order)\n2. Display\n3. Sort by priority\n4. Dequeue highest priority\n5. Exit\n");
         printf("Enter choice: ");
         scanf("%d", &ch);
         switch (ch) {
             case 1: enqueue(); break;
-            case 2: dequeue(); break;
-            case 3: display(); break;
-            case 4: peek(); break;
+            case 2: display(); break;
+            case 3: bubbleSort(); printf("Queue sorted by priority.\n"); break;
+            case 4: dequeue(); break;
             case 5: return 0;
             default: printf("Invalid Input\n");
         }
