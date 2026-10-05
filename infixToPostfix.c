@@ -38,6 +38,9 @@ int main(void) {
                 printf("%c", x);
             }
         }
+        else if(priority(stack[top]) == 3) {
+                 push(exp[i]);
+                }
         else {
             while (top != -1 && (priority(stack[top]) >= priority(exp[i]))) {
                 printf("%c", pop());
