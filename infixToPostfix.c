@@ -20,9 +20,6 @@ char pop() {
 
 int priority(char op) {
     if (op == '^') {
-        return 4;
-    }
-    else if (op == '%') {
         return 3;
     }
     else if (op == '*' || op == '/') {
@@ -57,7 +54,7 @@ int main(void) {
                 }
             }
             else {
-                if (priority(stack[top]) == 4) {
+                if (priority(stack[top]) == 3) {
                     push(exp[i]);
                 }
                 else {
